@@ -1,6 +1,7 @@
 $(document).ready(function() {
   checkUser();
   makeDeposit();
+  makeWithdrawal();
   toggleBalance();
 
   document.getElementById("defaultOpen").click();
@@ -100,7 +101,6 @@ function calculateAccountBalance() {
 }
 
 function makeDeposit(){
-
   $("#depositForm").on("submit", function(e){
     e.preventDefault();
 
@@ -116,10 +116,30 @@ function makeDeposit(){
     currentUser["log"].push(['deposit', amount, Date.now()]);
 
     console.log(currentUser["log"]);
-    
+
     openMyAccount();
   });
+}
 
+function makeWithdrawal(){
+  $("#withdrawal-form").on("submit", function(e){
+    e.preventDefault();
+
+    let form = $("#withdrawal-form");
+    // save data into array
+    let data = form.serializeArray();
+
+    // save wtihdrawal amount
+    let amount = data[0]["value"];
+    console.log(amount);
+
+    // record transaction
+    currentUser["log"].push(['withdrawal', amount, Date.now()]);
+
+    console.log(currentUser["log"]);
+
+    openMyAccount();
+  });
 }
 
 function checkUser() {
