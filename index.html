@@ -2,40 +2,125 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>WGL</title>
+    <title>Welcome | WGL</title>
 
     <!--  Styles  -->
     <link <link href="https://fonts.googleapis.com/css?family=Raleway:800" rel="stylesheet">
-    <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="index.css">
   </head>
   <body>
-    <div class="form-container">
-      
-      <section class="form-text">
-        <h1 class="form-title">World's Greatest Ledger</h1>
-        <h3>Please login below.</h3>
-      </section>
-
-
-      <form class="user-login-form" action="index.html" method="post">
-
-        <div class="field-wrappers">
-          <input type="text" name="firstname" placeholder="username"><br>
-          <input type="text" name="lastname" placeholder="password"><br><br>
-        </div>
-
-        <div class="submit-btn-wrapper">
-          <input type="submit" value="Submit">
-        </div>
-
-      </form>
-
-      <div class="form-disclaimer">
-        <p>First time here? You'll be taken to user registration.</p>
+    <div id="form-container">
+      <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'home')" id="defaultOpen">Home</button>
+        <button class="tablinks" onclick="openTab(event, 'myAccount')">My Account</button>
+        <button class="tablinks" onclick="openTab(event, 'deposit')">Make a Deposit</button>
+        <button class="tablinks" onclick="openTab(event, 'withdrawal')">Make a Withdrawal</button>
+        <button class="tablinks" onclick="openTab(event, 'history')">Account History</button>
       </div>
+
+      <div id="home" class="tabcontent">
+        <div id="new-user-form-wrapper">
+          <section class="content-text">
+            <h1 class="tab-title">World's Greatest Ledger</h1>
+            <h3>Please login below.</h3>
+            <p>Please note: usernames and passwords can only be letters or numbers.</p>
+          </section>
+
+
+          <form id="new-session-form" class="user-login-form" action="userPortal.html" method="post">
+
+            <div class="field-wrappers">
+              <input type="text" name="username" placeholder="username" pattern="^[a-zA-Z0-9_]*$" required><br>
+              <input type="password" name="password" placeholder="password" pattern="^[a-zA-Z0-9_]*$" required><br><br>
+            </div>
+
+            <div class="signup-btn-wrapper">
+              <input type="submit" value="Submit">
+            </div>
+
+          </form>
+
+          <div class="form-disclaimer">
+            <p>First time here? No problem. Your account will be created.</p>
+          </div>
+        </div> <!--  end new user form wrapper  -->
+      </div>
+
+      <div id="myAccount" class="tabcontent">
+        <!--  welcome msg  -->
+        <section class="content-text">
+          <h1 class="tab-title" id="welcome-user"></h1>
+        </section>
+        <!--  privacy toggle  -->
+        <section>
+          <div id="container">
+          	<div class="inner-container">
+          		<div class="toggle">
+          			<p>Hide</p>
+          		</div>
+          		<div class="toggle">
+          			<p>Show</p>
+          		</div>
+          	</div>
+          	<div class="inner-container" id='toggle-container'>
+          		<div class="toggle">
+          			<p>Hide</p>
+          		</div>
+          		<div class="toggle">
+          			<p>Show</p>
+          		</div>
+          	</div>
+          </div>
+        </section>
+
+        <p id="accountBalance"></p>
+        <p id="accountBalanceDate"></p>
+      </div>
+
+      <div id="deposit" class="tabcontent">
+        <form id="depositForm">
+          <section class="content-text">
+            <h1 class="tab-title">Make a Deposit</h1>
+          </section>
+
+          <div class="transaction-field-wrappers">
+            <input class="transaction-input" type="text" name="depositAmount" placeholder="$0" pattern="^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$" required>
+          </div>
+          <p class="transaction-direction">Amounts must be greater than $1.</p>
+
+          <div class="submit-btn-wrapper">
+            <input type="submit" value="Deposit" onclick="">
+          </div>
+        </form>
+      </div>
+
+      <div id="withdrawal" class="tabcontent">
+        <form id="transaction-form">
+          <section class="content-text">
+            <h1 class="tab-title">Make a Withdrawal</h1>
+          </section>
+
+          <div class="transaction-field-wrappers">
+            <input class="transaction-input" type="text" name="withdrawalAmount" placeholder="$0" pattern="^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$" required>
+          </div>
+
+          <p class="transaction-direction">Amounts must be greater than $1.</p>
+          <div class="submit-btn-wrapper">
+            <input type="submit" value="Withdrawal">
+          </div>
+        </form>
+      </div>
+      <div id="history" class="tabcontent">
+        <section class="content-text">
+          <h1 class="tab-title">Account History</h1>
+        </section>
+      </div>
+      <!-- ***************************** -->
+
     </div> <!--  end form container  -->
 
     <!--  Scripts  -->
-    <script src="scripts/index.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="index.js"></script>
   </body>
 </html>
