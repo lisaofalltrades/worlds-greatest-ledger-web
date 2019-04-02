@@ -108,15 +108,18 @@ function makeDeposit(){
     // save data into array
     let data = form.serializeArray();
 
-    // save username & password variables
+    // save deposit amount
     let amount = data[0]["value"];
     console.log(amount);
 
     // record transaction
     currentUser["log"].push(['deposit', amount, Date.now()]);
+
+    console.log(currentUser["log"]);
+    
+    openMyAccount();
   });
 
-  openMyAccount();
 }
 
 function checkUser() {
