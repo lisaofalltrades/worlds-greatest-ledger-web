@@ -143,26 +143,30 @@ function loadUser() {
 
 // show/hide account balance
 function toggleBalance() {
-  var toggle = document.getElementById('container');
-  var toggleContainer = document.getElementById('toggle-container');
+  var toggle = $('#container');
+  var toggleContainer = $('#toggle-container');
+
   var toggleNumber;
 
-  toggle.addEventListener('click', function() {
-  	toggleNumber = !toggleNumber;
-  	if (toggleNumber) {
-  		toggleContainer.style.clipPath = 'inset(0 0 0 50%)';
-  		toggleContainer.style.backgroundColor = '#D74046';
+  toggle.on("click", function(){
+    toggleNumber = !toggleNumber;
+
+    if (toggleNumber) {
+  		toggleContainer.css("clipPath", "inset(0 0 0 50%)");
+  		toggleContainer.css("backgroundColor", "#D74046");
   	} else {
-  		toggleContainer.style.clipPath = 'inset(0 50% 0 0)';
-  		toggleContainer.style.backgroundColor = 'dodgerblue';
+      toggleContainer.css("clipPath", "inset(0 50% 0 0)");
+      toggleContainer.css("backgroundColor", "#1E90FF");
   	}
     if (toggleNumber) {
-      document.getElementById('accountBalance').innerHTML = "$XX";
+      $("#accountBalance").text("$XX");
     } else {
+
       calculateAccountBalance();
-      document.getElementById('accountBalance').innerHTML = "$" + currentUser["accountBalance"];
+
+      $("#accountBalance").text("$" + currentUser["accountBalance"]);
     }
-  });
+  })
 }
 
 function makeDeposit(){
