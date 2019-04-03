@@ -126,16 +126,18 @@ function openMyAccount() {
 }
 
 function loadUser() {
-
+  // if there is a current user
   if (currentUser) {
-    document.getElementById('welcome-user').innerHTML = "Welcome " + currentUser["username"] + "!";
-
+    // render welcome msg
+    $("#welcomeMsg").text("Welcome " + currentUser["username"] + "!");
+    // calculate current balance
     calculateAccountBalance();
-    document.getElementById('accountBalance').innerHTML = "$" + currentUser["accountBalance"];
-
-    document.getElementById('accountBalanceDate').innerHTML = "Your account balance as of " + today;
-
-    document.getElementById("logtOutBtn").innerHTML = "Log Out"
+    // render account balance
+    $("#accountBalance").text("$" + currentUser["accountBalance"]);
+    // render "last update" msg
+    $("#accountBalanceDate").text("Your account balance as of " + today);
+    // render log out button
+    $("#logtOutBtn").text("Log Out");
   };
 }
 
