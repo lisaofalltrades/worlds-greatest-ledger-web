@@ -241,10 +241,11 @@ function calculateAccountBalance() {
 function accountHistory(){
   $("#historyBtn").on("click", function(){
     let accountHistoryDiv = $("#account-history")
+    // clear div to start fresh every time
     accountHistoryDiv.empty();
 
     if (jQuery.isEmptyObject(currentUser)) {
-      accountHistoryDiv.innerHTML = "Sorry, please log in to view your account history";
+      accountHistoryDiv.text("Sorry, please log in to view your account history");
     } else {
       // if there is a log
       if (currentUser["log"].length > 0) {
@@ -252,7 +253,7 @@ function accountHistory(){
 
       let transactionList = document.createElement('ul');
       accountHistoryDiv.append(transactionList);
-      accountHistoryDiv.append(transactionList);
+      // accountHistoryDiv.add('ul');
       var i;
       // for each transaction in transactionHistory
       for (i in transactionHistory) {
@@ -274,7 +275,7 @@ function accountHistory(){
         } // end for loop
 
       } else {
-        accountHistoryDiv.innerHTML = "Sorry, you have not made any transactions.";
+        accountHistoryDiv.text("Sorry, you have not made any transactions.");
       }
     }
   })
