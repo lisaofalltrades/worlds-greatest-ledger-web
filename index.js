@@ -4,7 +4,9 @@ $(document).ready(function() {
   makeWithdrawal();
   toggleBalance();
   accountHistory();
+  logOut();
 
+  // toggles sign in/registration on document ready
   document.getElementById("defaultOpen").click();
 });
 
@@ -39,37 +41,179 @@ class User {
 // functions //
 // ********* //
 
-function loadUser() {
+// functionality to toggle tabs
+function openTab(evt, menuItem) {
+  var i, tabcontent, tablinks;
 
-  if (currentUser) {
-    document.getElementById('welcome-user').innerHTML = "Welcome " + currentUser["username"] + "!";
+  tabContent = $(".tabcontent");
 
-    calculateAccountBalance();
-    document.getElementById('accountBalance').innerHTML = "$" + currentUser["accountBalance"];
+  tabContent.each(function(){
+    $(this).css("display", "none");
+  })
 
-    document.getElementById('accountBalanceDate').innerHTML = "Your account balance as of " + today;
-  };
+  tabLinks = $(".tablinks");
+
+  tabLinks.each(function(){
+    $(this).toggleClass("");
+  })
+
+  $("#" + menuItem).css("display", "block");
+
+  $(this).toggleClass("active");
+
+  // if deposit or withdrawal is clicked, focus on input element
+  if (menuItem === "deposit") {
+    $("#depositField").focus();
+  } else if (menuItem === "withdrawal") {
+    $("#withdrawalField").focus();
+  }
+}
+
+function checkUser() {
+  $("#form-container").on("submit", "#new-session-form", function(e){
+    e.preventDefault();
+
+    // select new session form
+    let form = $("#new-session-form");
+    // save data into array
+    let data = form.serializeArray();
+
+    // save username & password variables
+    let username = data[0]["value"];
+    let password = data[1]["value"];
+
+    // track number of pw guesses
+    let passwordCount = 2;
+    // if user is in usersData
+    if (usersData[username]) {
+      // check password
+      while(passwordCount > 0){
+
+        if(usersData[username]["password"] === password){
+          currentUser = usersData[username];
+
+          // take user to myAccount
+          openMyAccount();
+        } else {
+          passwordCount--;
+          document.getElementById("errorMsg").innerHTML = "Incorrect Password. Please try again."
+        }
+      }
+
+      if(passwordCount === 0){
+        document.getElementById("errorMsg").innerHTML = "Sorry. You have been locked out."
+        // take user back to home page
+        openTab(e, 'home');
+      }
+
+    } else { // if user is not in usersData, create account
+      usersData[username] = new User (username, password);
+      // setting user's transaction logs to array
+      usersData[username]["log"] = []
+      // setting starting balance at 0
+      usersData[username]["accountBalance"] = 0
+      // assign current user
+      currentUser = usersData[username];
+    } // end if user in usersData statement
+
+    // take user to myAccount
+    openMyAccount()
+
+    // clear fields
+    $(".sign-in-field").val("");
+  })
 }
 
 function openMyAccount() {
-  // hide all content
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-
-  // open my account tab
-  let welcomeMsg = document.getElementById("myAccount");
-  welcomeMsg.style.display = "block";
-  welcomeMsg.className += " active";
+  // toggle my account tab
+  openTab("click", "myAccount")
 
   // load current user
   loadUser();
+}
+
+function loadUser() {
+  // if there is a current user
+  if (currentUser) {
+    // render welcome msg
+    $("#welcomeMsg").text("Welcome " + currentUser["username"] + "!");
+    // calculate current balance
+    calculateAccountBalance();
+    // render account balance
+    $("#accountBalance").text("$" + currentUser["accountBalance"]);
+    // render "last update" msg
+    $("#accountBalanceDate").text("Your account balance as of " + today);
+    // render log out button
+    $("#logtOutBtn").text("Log Out");
+  };
+}
+
+// show/hide account balance
+function toggleBalance() {
+  var toggle = $('#container');
+  var toggleContainer = $('#toggle-container');
+
+  var toggleNumber;
+
+  toggle.on("click", function(){
+    toggleNumber = !toggleNumber;
+
+    if (toggleNumber) {
+  		toggleContainer.css("clipPath", "inset(0 0 0 50%)");
+  		toggleContainer.css("backgroundColor", "#D74046");
+  	} else {
+      toggleContainer.css("clipPath", "inset(0 50% 0 0)");
+      toggleContainer.css("backgroundColor", "#1E90FF");
+  	}
+    if (toggleNumber) {
+      $("#accountBalance").text("$XX");
+    } else {
+
+      calculateAccountBalance();
+
+      $("#accountBalance").text("$" + currentUser["accountBalance"]);
+    }
+  })
+}
+
+function makeDeposit(){
+  $("#depositForm").on("submit", function(e){
+    e.preventDefault();
+
+    let form = $("#depositForm");
+    // save data into array
+    let data = form.serializeArray();
+
+    // save deposit amount
+    let amount = data[0]["value"];
+
+    // record transaction
+    currentUser["log"].push(['deposit', amount, Date.now()]);
+
+    $(".transaction-input").val("");
+
+    openMyAccount();
+  });
+}
+
+function makeWithdrawal(){
+  $("#withdrawal-form").on("submit", function(e){
+    e.preventDefault();
+
+    let form = $("#withdrawal-form");
+    // save data into array
+    let data = form.serializeArray();
+
+    // save wtihdrawal amount
+    let amount = data[0]["value"];
+
+    // record transaction
+    currentUser["log"].push(['withdrawal', amount, Date.now()]);
+
+    $(".transaction-input").val("");
+
+    openMyAccount();
+  });
 }
 
 function calculateAccountBalance() {
@@ -103,22 +247,20 @@ function calculateAccountBalance() {
 
 function accountHistory(){
   $("#historyBtn").on("click", function(){
-    console.log("history btn clicked");
     let accountHistoryDiv = $("#account-history")
+    // clear div to start fresh every time
     accountHistoryDiv.empty();
 
     if (jQuery.isEmptyObject(currentUser)) {
-      console.log("current user empty");
-      accountHistoryDiv.innerHTML = "Sorry, please log in to view your account history";
+      accountHistoryDiv.text("Sorry, please log in to view your account history");
     } else {
-      console.log("there is a user");
       // if there is a log
       if (currentUser["log"].length > 0) {
       let transactionHistory = currentUser["log"];
 
       let transactionList = document.createElement('ul');
       accountHistoryDiv.append(transactionList);
-      accountHistoryDiv.append(transactionList);
+      // accountHistoryDiv.add('ul');
       var i;
       // for each transaction in transactionHistory
       for (i in transactionHistory) {
@@ -140,132 +282,26 @@ function accountHistory(){
         } // end for loop
 
       } else {
-        accountHistoryDiv.innerHTML = "Sorry, you have not made any transactions.";
+        accountHistoryDiv.text("Sorry, you have not made any transactions.");
       }
     }
   })
 }
 
-function makeDeposit(){
-  $("#depositForm").on("submit", function(e){
-    e.preventDefault();
+function logOut(){
+  $("#logtOutBtn").on("click", function(e){
+    // remove log out option
+    $("#logtOutBtn").empty();
+    // remove welcome msg
+    $("#welcome-user").empty();
+    // remove account balance & last update msg
+    $("#accountBalance").empty();
+    $("#accountBalanceDate").empty();
 
-    let form = $("#depositForm");
-    // save data into array
-    let data = form.serializeArray();
+    // reset current user
+    currentUser = [];
 
-    // save deposit amount
-    let amount = data[0]["value"];
-
-    // record transaction
-    currentUser["log"].push(['deposit', amount, Date.now()]);
-
-    openMyAccount();
-  });
-}
-
-function makeWithdrawal(){
-  $("#withdrawal-form").on("submit", function(e){
-    e.preventDefault();
-
-    let form = $("#withdrawal-form");
-    // save data into array
-    let data = form.serializeArray();
-
-    // save wtihdrawal amount
-    let amount = data[0]["value"];
-
-    // record transaction
-    currentUser["log"].push(['withdrawal', amount, Date.now()]);
-
-    openMyAccount();
-  });
-}
-
-function checkUser() {
-  $("#form-container").on("submit", "#new-session-form", function(e){
-    e.preventDefault();
-
-    // select new session form
-    let form = $("#new-session-form");
-    // save data into array
-    let data = form.serializeArray();
-
-    // save username & password variables
-    let username = data[0]["value"];
-    let password = data[1]["value"];
-
-    // track number of pw guesses
-    let passwordCount = 2;
-    // if user is in usersData
-    if (usersData[username]) {
-      // check password
-      while(passwordCount > 0){
-
-        if(usersData[username]["password"] === password){
-          currentUser = usersData[username];
-          showMenu();
-        } else {
-          passwordCount--;
-        }
-      }
-
-      if(passwordCount === 0){
-        console.log(colors.yellow("You have reached maximum number of tries!"));
-        openLedger();
-      }
-
-    } else { // if user is not in usersData, create account
-      usersData[username] = new User (username, password);
-      // setting user's transaction logs to array
-      usersData[username]["log"] = []
-      // setting starting balance at 0
-      usersData[username]["accountBalance"] = 0
-      // assign current user
-      currentUser = usersData[username];
-    } // end if user in usersData statement
-
-    // take user to myAccount
-    openMyAccount()
+    // take user back to home page
+    openTab(e, 'home');
   })
-}
-
-// functionality for tabs
-function openTab(evt, menuItem) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-
-  document.getElementById(menuItem).style.display = "block";
-  evt.currentTarget.className += " active";
-}
-
-// show/hide account balance
-function toggleBalance() {
-  var toggle = document.getElementById('container');
-  var toggleContainer = document.getElementById('toggle-container');
-  var toggleNumber;
-
-  toggle.addEventListener('click', function() {
-  	toggleNumber = !toggleNumber;
-  	if (toggleNumber) {
-  		toggleContainer.style.clipPath = 'inset(0 0 0 50%)';
-  		toggleContainer.style.backgroundColor = '#D74046';
-  	} else {
-  		toggleContainer.style.clipPath = 'inset(0 50% 0 0)';
-  		toggleContainer.style.backgroundColor = 'dodgerblue';
-  	}
-    if (toggleNumber) {
-      document.getElementById('accountBalance').innerHTML = "$XX";
-    } else {
-      calculateAccountBalance();
-      document.getElementById('accountBalance').innerHTML = "$" + currentUser["accountBalance"];
-    }
-  });
 }
