@@ -60,6 +60,13 @@ function openTab(evt, menuItem) {
   $("#" + menuItem).css("display", "block");
 
   $(this).toggleClass("active");
+
+  // if deposit or withdrawal is clicked, focus on input element
+  if (menuItem === "deposit") {
+    $("#depositField").focus();
+  } else if (menuItem === "withdrawal") {
+    $("#withdrawalField").focus();
+  }
 }
 
 function checkUser() {
