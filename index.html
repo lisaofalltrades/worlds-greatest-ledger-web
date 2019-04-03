@@ -15,7 +15,7 @@
         <button class="tablinks" onclick="openTab(event, 'myAccount')">My Account</button>
         <button class="tablinks" onclick="openTab(event, 'deposit')">Make a Deposit</button>
         <button class="tablinks" onclick="openTab(event, 'withdrawal')">Make a Withdrawal</button>
-        <button class="tablinks" onclick="openTab(event, 'history')">Account History</button>
+        <button id="historyBtn" class="tablinks" onclick="openTab(event, 'history')">Account History</button>
       </div>
 
       <div id="home" class="tabcontent">
@@ -115,6 +115,11 @@
       <div id="history" class="tabcontent">
         <section class="content-text">
           <h1 class="tab-title">Account History</h1>
+        </section>
+        <section>
+          <div id="account-history">
+
+          </div>
         </section>
       </div>
       <!-- ***************************** -->

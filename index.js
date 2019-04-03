@@ -3,6 +3,7 @@ $(document).ready(function() {
   makeDeposit();
   makeWithdrawal();
   toggleBalance();
+  accountHistory();
 
   document.getElementById("defaultOpen").click();
 });
@@ -100,6 +101,51 @@ function calculateAccountBalance() {
   }
 }
 
+function accountHistory(){
+  $("#historyBtn").on("click", function(){
+    console.log("history btn clicked");
+    let accountHistoryDiv = $("#account-history")
+    accountHistoryDiv.empty();
+
+    if (jQuery.isEmptyObject(currentUser)) {
+      console.log("current user empty");
+      accountHistoryDiv.innerHTML = "Sorry, please log in to view your account history";
+    } else {
+      console.log("there is a user");
+      // if there is a log
+      if (currentUser["log"].length > 0) {
+      let transactionHistory = currentUser["log"];
+
+      let transactionList = document.createElement('ul');
+      accountHistoryDiv.append(transactionList);
+      accountHistoryDiv.append(transactionList);
+      var i;
+      // for each transaction in transactionHistory
+      for (i in transactionHistory) {
+        let category = transactionHistory[i][0];
+        let amount = transactionHistory[i][1];
+        let date = new Date(transactionHistory[i][2]).toLocaleDateString("en-US");
+        var listItem = document.createElement('li');
+
+        // if category is deposit, print amount with +
+        if (category === "deposit") {
+          listItem.innerHTML = date + " + $" + amount;
+
+        } else if (category === "withdrawal") {
+        // else if category is withdrawal, print amount with -
+          listItem.innerHTML = date + " - $" + amount;
+        } // end if category statement
+
+        transactionList.append(listItem);
+        } // end for loop
+
+      } else {
+        accountHistoryDiv.innerHTML = "Sorry, you have not made any transactions.";
+      }
+    }
+  })
+}
+
 function makeDeposit(){
   $("#depositForm").on("submit", function(e){
     e.preventDefault();
@@ -110,12 +156,9 @@ function makeDeposit(){
 
     // save deposit amount
     let amount = data[0]["value"];
-    console.log(amount);
 
     // record transaction
     currentUser["log"].push(['deposit', amount, Date.now()]);
-
-    console.log(currentUser["log"]);
 
     openMyAccount();
   });
@@ -131,12 +174,9 @@ function makeWithdrawal(){
 
     // save wtihdrawal amount
     let amount = data[0]["value"];
-    console.log(amount);
 
     // record transaction
     currentUser["log"].push(['withdrawal', amount, Date.now()]);
-
-    console.log(currentUser["log"]);
 
     openMyAccount();
   });
@@ -160,16 +200,12 @@ function checkUser() {
     // if user is in usersData
     if (usersData[username]) {
       // check password
-      console.log("Please wait while we verify your account...");
-
       while(passwordCount > 0){
 
         if(usersData[username]["password"] === password){
-          console.log("logging in...");
           currentUser = usersData[username];
           showMenu();
         } else {
-          password = readlineSync.question("Incorrect Password. Please enter your password again: ", { hideEchoBack: true });
           passwordCount--;
         }
       }
@@ -180,19 +216,15 @@ function checkUser() {
       }
 
     } else { // if user is not in usersData, create account
-      console.log("\nCreating account...\n");
       usersData[username] = new User (username, password);
       // setting user's transaction logs to array
       usersData[username]["log"] = []
       // setting starting balance at 0
       usersData[username]["accountBalance"] = 0
-      console.log("Success! Welcome " + username + "!");
       // assign current user
       currentUser = usersData[username];
-      console.log(currentUser);
     } // end if user in usersData statement
 
-    console.log(currentUser);
     // take user to myAccount
     openMyAccount()
   })
@@ -209,6 +241,7 @@ function openTab(evt, menuItem) {
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
   }
+
   document.getElementById(menuItem).style.display = "block";
   evt.currentTarget.className += " active";
 }

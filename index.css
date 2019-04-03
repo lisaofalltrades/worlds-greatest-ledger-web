@@ -238,3 +238,16 @@ input[type="submit"] {
 #accountBalanceDate {
   text-align: center;
 }
+
+#account-history {
+  font-size: 25px;
+  padding-left: 10px;
+}
+
+.deposit {
+  color: green;
+}
+
+.withdrawal {
+  color: red;
+}
