@@ -6,6 +6,7 @@ $(document).ready(function() {
   accountHistory();
   logOut();
 
+  // toggles sign in/registration on document ready
   document.getElementById("defaultOpen").click();
 });
 
@@ -40,20 +41,25 @@ class User {
 // functions //
 // ********* //
 
-// functionality for tabs
+// functionality to toggle tabs
 function openTab(evt, menuItem) {
   var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
 
-  document.getElementById(menuItem).style.display = "block";
-  evt.currentTarget.className += " active";
+  tabContent = $(".tabcontent");
+
+  tabContent.each(function(){
+    $(this).css("display", "none");
+  })
+
+  tabLinks = $(".tablinks");
+
+  tabLinks.each(function(){
+    $(this).toggleClass("");
+  })
+
+  $("#" + menuItem).css("display", "block");
+
+  $(this).toggleClass("active");
 }
 
 function checkUser() {
