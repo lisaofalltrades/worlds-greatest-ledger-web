@@ -160,6 +160,8 @@ function makeDeposit(){
     // record transaction
     currentUser["log"].push(['deposit', amount, Date.now()]);
 
+    $(".transaction-input").val("");
+
     openMyAccount();
   });
 }
@@ -177,6 +179,8 @@ function makeWithdrawal(){
 
     // record transaction
     currentUser["log"].push(['withdrawal', amount, Date.now()]);
+
+    $(".transaction-input").val("");
 
     openMyAccount();
   });
