@@ -118,21 +118,8 @@ function checkUser() {
 }
 
 function openMyAccount() {
-  // hide all content
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-
-  // open my account tab
-  let welcomeMsg = document.getElementById("myAccount");
-  welcomeMsg.style.display = "block";
-  welcomeMsg.className += " active";
+  // toggle my account tab
+  openTab("click", "myAccount")
 
   // load current user
   loadUser();
