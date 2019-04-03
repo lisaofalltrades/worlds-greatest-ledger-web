@@ -16,6 +16,7 @@
         <button class="tablinks" onclick="openTab(event, 'deposit')">Make a Deposit</button>
         <button class="tablinks" onclick="openTab(event, 'withdrawal')">Make a Withdrawal</button>
         <button id="historyBtn" class="tablinks" onclick="openTab(event, 'history')">Account History</button>
+        <button id="logtOutBtn" class="tablinks"></button>
       </div>
 
       <div id="home" class="tabcontent">
@@ -30,8 +31,8 @@
           <form id="new-session-form" class="user-login-form" action="userPortal.html" method="post">
 
             <div class="field-wrappers">
-              <input type="text" name="username" placeholder="username" pattern="^[a-zA-Z0-9_]*$" required><br>
-              <input type="password" name="password" placeholder="password" pattern="^[a-zA-Z0-9_]*$" required><br><br>
+              <input class="sign-in-field" type="text" name="username" placeholder="username" pattern="^[a-zA-Z0-9_]*$" required><br>
+              <input class="sign-in-field" type="password" name="password" placeholder="password" pattern="^[a-zA-Z0-9_]*$" required><br><br>
             </div>
 
             <div class="signup-btn-wrapper">
@@ -86,7 +87,7 @@
           <div class="transaction-field-wrappers">
             <input class="transaction-input" type="text" name="depositAmount" placeholder="$0" pattern="^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$" required>
           </div>
-          
+
           <p class="transaction-direction">Amounts must be greater than $1.</p>
 
           <div class="submit-btn-wrapper">

@@ -4,6 +4,7 @@ $(document).ready(function() {
   makeWithdrawal();
   toggleBalance();
   accountHistory();
+  logOut();
 
   document.getElementById("defaultOpen").click();
 });
@@ -48,7 +49,25 @@ function loadUser() {
     document.getElementById('accountBalance').innerHTML = "$" + currentUser["accountBalance"];
 
     document.getElementById('accountBalanceDate').innerHTML = "Your account balance as of " + today;
+
+    document.getElementById("logtOutBtn").innerHTML = "Log Out"
   };
+}
+
+function logOut(){
+
+  $("#logtOutBtn").on("click", function(e){
+    // remove log out option
+    $("#logtOutBtn").empty();
+
+    // reset current user
+    currentUser = [];
+
+    // take user back to home page
+    openTab(e, 'home');
+  })
+
+
 }
 
 function openMyAccount() {
@@ -103,15 +122,12 @@ function calculateAccountBalance() {
 
 function accountHistory(){
   $("#historyBtn").on("click", function(){
-    console.log("history btn clicked");
     let accountHistoryDiv = $("#account-history")
     accountHistoryDiv.empty();
 
     if (jQuery.isEmptyObject(currentUser)) {
-      console.log("current user empty");
       accountHistoryDiv.innerHTML = "Sorry, please log in to view your account history";
     } else {
-      console.log("there is a user");
       // if there is a log
       if (currentUser["log"].length > 0) {
       let transactionHistory = currentUser["log"];
@@ -189,6 +205,8 @@ function makeWithdrawal(){
 function checkUser() {
   $("#form-container").on("submit", "#new-session-form", function(e){
     e.preventDefault();
+
+    $(".sign-in-field").val("");
 
     // select new session form
     let form = $("#new-session-form");
